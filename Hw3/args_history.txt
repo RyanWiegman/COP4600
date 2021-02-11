@@ -1,5 +1,20 @@
-history
-whereami
-movetodir
-kkalskdj
-whereami
+whereami 
+movetodir test 
+history 
+replay 0 
+history 
+replay 1 
+replay 0 
+movetodir /test 
+history 
+replay 0 
+history 
+history 
+replay 0 
+replay 7 
+histoyr 
+history 
+histoyr 
+history 
+history 
+replay 7 

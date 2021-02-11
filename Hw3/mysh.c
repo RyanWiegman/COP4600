@@ -8,6 +8,7 @@
 #define DELIMITER " \n"
 #define BUFFER 1024
 
+int check_builtin(char**);
 char* currentdir;
 
 void set_dir(){
@@ -37,7 +38,7 @@ void change_dir(char** args){
     if(!result){
         printf("inside result statement.\n");
         currentdir = test_dir;
-        printf("After new current_dir is saved: %s", currentdir);
+        printf("After new current_dir is saved: %s\n", currentdir);
     }
     else{
         printf("Directory does not exist.\n");
@@ -46,6 +47,8 @@ void change_dir(char** args){
 }
 
 void print_history() {
+    printf("Inside print history.\n\n");
+
     char* line = NULL;
     size_t buf_size = 0;
     ssize_t line_count;
@@ -83,12 +86,54 @@ int launch(char** args){
         }
     }
     else if(pid < 0){
-        printf("PID error.");
-        perror("PID error");
+        printf("PID error.\n");
+        perror("PID error\n");
     }
     else
         while(wait(&status) != pid);
     return 1;
+}
+
+void replay(char** args) {
+    printf("inside replay.\n");
+
+    FILE* read = fopen("args_history.txt", "r");
+    size_t buf_size = 0;
+    ssize_t line_count;
+    int line_number = atoi(args[1]);
+    int counter = 0, index = 0, run = 0;
+    char* args_line;
+    char** selected_args = malloc(sizeof(char*) * BUFFER);
+
+    printf("user inputed line number: %d\n", line_number);
+
+    line_count = getline(&args_line, &buf_size, read);
+    while (line_count >= 0){
+        if(counter == line_number){
+            printf("selected line: %s\n", args_line);
+
+            args_line[strlen(args_line)] = '\0';
+            args_line = strtok(args_line, DELIMITER);
+
+            while(args_line != NULL){
+                selected_args[index] = args_line;
+                args_line = strtok(NULL, DELIMITER);
+                index++;
+            }
+            run = check_builtin(selected_args);
+        }
+        counter++;
+        line_count = getline(&args_line, &buf_size, read);
+    }
+
+    printf("selected args array: %s", selected_args[0]);
+    if(selected_args[1] != NULL)
+        printf("%s\n", selected_args[1]);
+
+    if(line_number > counter)
+        printf("command does not exist.\n");
+    //free(selected_args);
+    fclose(read);
 }
 
 int check_builtin(char** args) {
@@ -107,6 +152,8 @@ int check_builtin(char** args) {
     }
     else if(strcmp(args[0], "byebye") == 0)
         return EXIT_SUCCESS;
+    else if (strcmp(args[0], "replay") == 0)
+        replay(args);
     return 1;
 }
 
@@ -121,7 +168,6 @@ char** read_line() {
         printf("Malloc error.\n");
         exit(EXIT_FAILURE);
     }
-    if(parse_string)
 
     fgets(input_string, BUFFER, stdin);
     input_string[strlen(input_string) - 1] = '\0';
@@ -135,17 +181,18 @@ char** read_line() {
 
     for(int i = 0; i < index; i++){
         printf("token: %s\n", args_array[i]);
-        fprintf(intext, "%s\n", args_array[i]);
+        if(i > 0 && strcmp(args_array[0], "movetodir") == 0)
+            fprintf(intext, "/");
+        fprintf(intext, "%s ", args_array[i]);
     }
+    fprintf(intext, "\n");
     fclose(intext);
-    printf("give me something anything");
     return args_array;
 }
 
 int main() {
     currentdir = malloc(sizeof(char) * BUFFER);
     char** args;
-    //char** args_history;
     //char* currentdir;
     int run = 1, clear = 1;
     set_dir(currentdir);
