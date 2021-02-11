@@ -6,10 +6,43 @@
 #include <sys/wait.h>
 
 #define DELIMITER " \n"
+#define BUFFER 1024
+
+char* currentdir;
+
+void set_dir(){
+    char cwd[BUFFER];
+    getcwd(cwd, sizeof(cwd));
+    strcpy(currentdir, cwd);
+}
 
 void print_cwd() {
-    char cwd[1024];
-    printf("%s\n", getcwd(cwd, sizeof(cwd)));
+    printf("inside print_cwd\n\n");
+    printf("%s\n", currentdir);
+    fflush(stdout);
+}
+
+void change_dir(char** args){
+    printf("inside change_dir.\n\n");
+    char* test_dir = malloc(sizeof(char) * BUFFER);
+    int result;
+
+    strcpy(test_dir, currentdir);
+    strcat(test_dir, "/");
+    strcat(test_dir, args[1]);
+
+    printf("print current dir after strcat: %s\n", currentdir);
+    printf("after strcat for test_dir: %s\n", test_dir);
+    result = access(test_dir, F_OK);
+    if(!result){
+        printf("inside result statement.\n");
+        currentdir = test_dir;
+        printf("After new current_dir is saved: %s", currentdir);
+    }
+    else{
+        printf("Directory does not exist.\n");
+    }
+    //free(test_dir);   dont know why but this clears currentdir as well.
 }
 
 void print_history() {
@@ -59,8 +92,11 @@ int launch(char** args){
 }
 
 int check_builtin(char** args) {
-   
-    if(strcmp(args[0], "whereami") == 0)
+    printf("inside check_builtins\n\n");
+
+    if(strcmp(args[0], "movetodir") == 0)
+        change_dir(args);
+    else if(strcmp(args[0], "whereami") == 0)
         print_cwd();
     else if(strcmp(args[0], "history") == 0){
         if(args[1] != NULL && strcmp(args[1], "-c") == 0)
@@ -75,9 +111,9 @@ int check_builtin(char** args) {
 }
 
 char** read_line() {
-    char input_string[1024];
-    char* parse_string = malloc(sizeof(char));
-    char** args_array = malloc(sizeof(char*));
+    char input_string[BUFFER];
+    char* parse_string = malloc(sizeof(char) * BUFFER);
+    char** args_array = malloc(sizeof(char*) * BUFFER);
     int index = 0;
     FILE *intext = fopen("args_history.txt", "a");
 
@@ -85,8 +121,9 @@ char** read_line() {
         printf("Malloc error.\n");
         exit(EXIT_FAILURE);
     }
+    if(parse_string)
 
-    fgets(input_string, 1024, stdin);
+    fgets(input_string, BUFFER, stdin);
     input_string[strlen(input_string) - 1] = '\0';
 
     parse_string = strtok(input_string, DELIMITER);
@@ -101,25 +138,32 @@ char** read_line() {
         fprintf(intext, "%s\n", args_array[i]);
     }
     fclose(intext);
+    printf("give me something anything");
     return args_array;
 }
 
 int main() {
+    currentdir = malloc(sizeof(char) * BUFFER);
     char** args;
-    char** args_history;
+    //char** args_history;
+    //char* currentdir;
     int run = 1, clear = 1;
+    set_dir(currentdir);
 
     while(run){
         if(clear){
             system("clear");
             clear = 0;
         }
+        printf("%s", currentdir);
         printf("#");
 
         args = read_line();
+        printf("Before check_builtin call. \n");
         run = check_builtin(args);
         //run = launch(args);
-        printf("\nrun var: %d\n", run);
+        printf("\n\n\nrun var: %d\n", run);
+        free(args);
     }
    return EXIT_SUCCESS;
 }
