@@ -18,3 +18,40 @@ histoyr
 history 
 history 
 replay 7 
+start ls 
+ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start /klskd/pop 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start ls 
+start /ls 
+start ls 
+start ls 
+whereami 
+ls 
+start ls 
+start ls 
+start ls 
+start /lt 
+start ls -gr 
+start /usr/bin/xterm -bg green 
+start ls 
+start mysh 
+history 

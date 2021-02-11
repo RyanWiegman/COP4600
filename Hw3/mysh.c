@@ -20,7 +20,6 @@ void set_dir(){
 void print_cwd() {
     printf("inside print_cwd\n\n");
     printf("%s\n", currentdir);
-    fflush(stdout);
 }
 
 void change_dir(char** args){
@@ -68,9 +67,40 @@ void clear_history(){
     fclose(clear);
 }
 
-int launch(char** args){
+char* check_path_type(char* arg) {
+    printf("Inside check path type.\n\n");
+
+    char* path = arg;
+
+    if(path[0] == '/')
+        return arg;
+    else {
+       char* new_path = malloc(sizeof(char) * BUFFER);
+       strcpy(new_path, currentdir);
+       strcat(new_path, "/");
+       strcat(new_path, path);
+       return new_path;
+    }    
+}
+
+int start(char** args){
+    printf("Inside start: \n\n");
+
     pid_t pid;
     int status;
+
+    int index = 0;
+    while(args[index + 1] != NULL){
+        printf("inside while before adjustment: %s\n", args[0]);
+        args[index] = args[index + 1];
+        printf("after adjust: %s\n", args[0]);
+        printf("second index: %s\n", args[1]);
+        index++;
+    }
+    args[index] = NULL;
+    printf("after while loop last position: %s\n", args[1]);
+    args[0] = check_path_type(args[0]);
+    printf("new returned path after cpt: %s\n", args[0]);
 
     if(args == NULL){
         printf("No arguments\n");
@@ -80,10 +110,8 @@ int launch(char** args){
     pid = fork();
     if(pid == 0) {
         printf("\nInside child first token: %s\n", args[0]);
-        if(execvp(args[0], args) == -1){
-            printf("shell error");
+        if(execvp(args[0], args) == -1)
             perror("shell");
-        }
     }
     else if(pid < 0){
         printf("PID error.\n");
@@ -154,6 +182,8 @@ int check_builtin(char** args) {
         return EXIT_SUCCESS;
     else if (strcmp(args[0], "replay") == 0)
         replay(args);
+    else if(strcmp(args[0], "start") == 0)
+        start(args);
     return 1;
 }
 
