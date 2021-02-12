@@ -18,7 +18,6 @@ void set_dir(){
 }
 
 void print_cwd() {
-    printf("inside print_cwd\n\n");
     printf("%s\n", currentdir);
 }
 
@@ -27,17 +26,16 @@ void change_dir(char** args){
     char* test_dir = malloc(sizeof(char) * BUFFER);
     int result;
 
+    if(args[1] == NULL || test_dir == NULL)
+        return;
+
     strcpy(test_dir, currentdir);
     strcat(test_dir, "/");
     strcat(test_dir, args[1]);
 
-    printf("print current dir after strcat: %s\n", currentdir);
-    printf("after strcat for test_dir: %s\n", test_dir);
     result = access(test_dir, F_OK);
     if(!result){
-        printf("inside result statement.\n");
         currentdir = test_dir;
-        printf("After new current_dir is saved: %s\n", currentdir);
     }
     else{
         printf("Directory does not exist.\n");
@@ -85,7 +83,6 @@ char* check_path_type(char* arg) {
 
 int start(char** args){
     printf("Inside start: \n\n");
-    printf("ahhhh: %s\n", args[0]);
 
     pid_t pid;
     int status;
@@ -96,15 +93,11 @@ int start(char** args){
     }
 
     pid = fork();
-    if(pid == 0) {
-        printf("\nInside child first token: %s\n", args[0]);
+    if(pid == 0) 
         if(execvp(args[0], args) == -1)
             perror("shell");
-    }
-    else if(pid < 0){
-        printf("PID error.\n");
+    else if(pid < 0)
         perror("PID error\n");
-    }
     else
         while(wait(&status) != pid);
     return 1;
@@ -136,6 +129,19 @@ void replay(char** args) {
                 args_line = strtok(NULL, DELIMITER);
                 index++;
             }
+
+            ////////////
+            printf("before while\n");
+            int ind = 0;
+            while(selected_args[ind + 1]) {
+                printf("replay: inside while\n");
+                printf("selected args array: %s\n", selected_args[ind]);
+                ind++;
+            }
+            if(ind != 0)
+                selected_args[ind + 1] = '\0';
+
+            //////////////
             run = check_builtin(selected_args);
         }
         counter++;
@@ -148,28 +154,25 @@ void replay(char** args) {
 
     if(line_number > counter)
         printf("command does not exist.\n");
-    //free(selected_args);
+    free(selected_args);
     fclose(read);
 }
 
 int background(char** args) {
-    printf("Inside start: \n\n");
+    printf("Inside background: \n\n");
 
     pid_t pid;
     int status;
 
+    printf("PID: %d\n", pid);
+
     int index = 0;
     while(args[index + 1] != NULL){
-        printf("inside while before adjustment: %s\n", args[0]);
         args[index] = args[index + 1];
-        printf("after adjust: %s\n", args[0]);
-        printf("second index: %s\n", args[1]);
         index++;
     }
     args[index] = NULL;
-    printf("after while loop last position: %s\n", args[1]);
     args[0] = check_path_type(args[0]);
-    printf("new returned path after cpt: %s\n", args[0]);
 
     if(args == NULL){
         printf("No arguments\n");
@@ -177,16 +180,12 @@ int background(char** args) {
     }
 
     pid = fork();
-    printf("PID: %d\n", pid);
-    if(pid == 0) {
-        printf("\nInside child first token: %s\n", args[0]);
+    
+    if(pid == 0) 
         if(execvp(args[0], args) == -1)
             perror("shell");
-    }
-    else if(pid < 0){
-        printf("PID error.\n");
+    else if(pid < 0)
         perror("PID error\n");
-    }
     else
         while(wait(&status) != pid);
     return 0;
@@ -196,44 +195,40 @@ void kill_program(char** args) {
     printf("Insider kill program.\n\n");
 
     int pid_number = atoi(args[1]);
-    printf("Pid_number: %d\n", pid_number);
     kill(pid_number, SIGKILL);
 }
 
 int check_builtin(char** args) {
     printf("inside check_builtins\n\n");
+    if(args == NULL)
+        return 1;
 
-    if(strcmp(args[0], "movetodir") == 0)
+    else if(strcmp(args[0], "movetodir") == 0)
         change_dir(args);
     else if(strcmp(args[0], "whereami") == 0)
         print_cwd();
     else if(strcmp(args[0], "history") == 0){
+        printf("inside history call.\n");
         if(args[1] != NULL && strcmp(args[1], "-c") == 0)
-            clear_history();
+                clear_history();
         else
-            print_history();
+           print_history();           
         return 1;
     }
     else if(strcmp(args[0], "byebye") == 0)
-        return EXIT_SUCCESS;
+        exit(1);
     else if (strcmp(args[0], "replay") == 0)
         replay(args);
     else if(strcmp(args[0], "start") == 0){
         int index = 0;
         while(args[index + 1] != NULL){
-            printf("inside while before adjustment: %s\n", args[0]);
             args[index] = args[index + 1];
-            printf("after adjust: %s\n", args[0]);
-            printf("second index: %s\n", args[1]);
             index++;
         }
         if(index != 0)
             args[index] = NULL;
 
-        printf("after while loop first position: %s\n", args[0]);
-        printf("after while loop last position: %s\n", args[1]);
         args[0] = check_path_type(args[0]);
-        printf("new returned path after cpt: %s\n", args[0]);
         start(args);
     }    
     else if(strcmp(args[0], "background") == 0)
@@ -267,8 +262,16 @@ char** read_line() {
         index++;
     }
 
+    //////////////
+    int ind = 0;
+    while(args_array[ind + 1] != NULL){
+        ind++;
+    }
+    if(ind != 0)
+        args_array[ind + 1] = '\0';
+    /////////////////
+
     for(int i = 0; i < index; i++){
-        printf("token: %s\n", args_array[i]);
         if(i > 0 && strcmp(args_array[0], "movetodir") == 0)
             fprintf(intext, "/");
         fprintf(intext, "%s ", args_array[i]);
@@ -290,13 +293,11 @@ int main() {
             system("clear");
             clear = 0;
         }
-        printf("%s", currentdir);
         printf("#");
 
         args = read_line();
-        printf("Before check_builtin call. \n");
         run = check_builtin(args);
-        if(!run)
+        if(!run && !strcmp(args[0], "byebye") == 0)
             run = start(args);
         printf("\n\n\nrun var: %d\n", run);
         free(args);
