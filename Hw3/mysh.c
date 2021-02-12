@@ -97,7 +97,10 @@ int start(char** args){
         printf("second index: %s\n", args[1]);
         index++;
     }
-    args[index] = NULL;
+    if(index != 0)
+        args[index] = NULL;
+
+    printf("after while loop first position: %s\n", args[0]);
     printf("after while loop last position: %s\n", args[1]);
     args[0] = check_path_type(args[0]);
     printf("new returned path after cpt: %s\n", args[0]);
@@ -119,7 +122,7 @@ int start(char** args){
     }
     else
         while(wait(&status) != pid);
-    return 1;
+    return 0;
 }
 
 void replay(char** args) {
@@ -164,6 +167,54 @@ void replay(char** args) {
     fclose(read);
 }
 
+int background(char** args) {
+    printf("Inside start: \n\n");
+
+    pid_t pid;
+    int status;
+
+    int index = 0;
+    while(args[index + 1] != NULL){
+        printf("inside while before adjustment: %s\n", args[0]);
+        args[index] = args[index + 1];
+        printf("after adjust: %s\n", args[0]);
+        printf("second index: %s\n", args[1]);
+        index++;
+    }
+    args[index] = NULL;
+    printf("after while loop last position: %s\n", args[1]);
+    args[0] = check_path_type(args[0]);
+    printf("new returned path after cpt: %s\n", args[0]);
+
+    if(args == NULL){
+        printf("No arguments\n");
+        return 1;
+    }
+
+    pid = fork();
+    printf("PID: %d\n", pid);
+    if(pid == 0) {
+        printf("\nInside child first token: %s\n", args[0]);
+        if(execvp(args[0], args) == -1)
+            perror("shell");
+    }
+    else if(pid < 0){
+        printf("PID error.\n");
+        perror("PID error\n");
+    }
+    else
+        while(wait(&status) != pid);
+    return 0;
+}
+
+void kill_program(char** args) {
+    printf("Insider kill program.\n\n");
+
+    int pid_number = atoi(args[1]);
+    printf("Pid_number: %d\n", pid_number);
+    kill(pid_number, SIGKILL);
+}
+
 int check_builtin(char** args) {
     printf("inside check_builtins\n\n");
 
@@ -184,6 +235,10 @@ int check_builtin(char** args) {
         replay(args);
     else if(strcmp(args[0], "start") == 0)
         start(args);
+    else if(strcmp(args[0], "background") == 0)
+        background(args);
+    else if(strcmp(args[0], "dalek") == 0)
+        kill_program(args);
     return 1;
 }
 
@@ -238,7 +293,7 @@ int main() {
         args = read_line();
         printf("Before check_builtin call. \n");
         run = check_builtin(args);
-        //run = launch(args);
+        //run = start(args);
         printf("\n\n\nrun var: %d\n", run);
         free(args);
     }
