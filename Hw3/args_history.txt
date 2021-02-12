@@ -1,35 +1,28 @@
-whereami 
-movetodir /test 
-start /usr/bin/xterm 
-background /usr/bin/xterm 
-pid 
-PID 
-delak 123 
-dalek123 
-daled 123 
-dalek 123 
-history 
-replay 3 
-replay 2 
-dalek 123 
 history 
 history 
-replay 3 
-dalek 2236 
-ps 
 ls 
-start ls 
-start ls 
-start test 
+clear 
 dir 
-start ls 
+ls 
+start /usr/bin/xterm 
+ls 
+ls 
+whereami 
+ls 
+clear 
+ls 
+clear 
+dir 
+ls 
+ls 
+clear 
+start /usr/bin/xterm 
+ls 
 history 
-replay 2 
-start ls 
+ls 
+cd test 
+movetodir /test 
+ls 
 ps 
-ps 
-pid 
-ls 
-ls 
-ls 
-ls 
+dalek 3322 
+dalek 3262 

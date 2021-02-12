@@ -85,25 +85,10 @@ char* check_path_type(char* arg) {
 
 int start(char** args){
     printf("Inside start: \n\n");
+    printf("ahhhh: %s\n", args[0]);
 
     pid_t pid;
     int status;
-
-    int index = 0;
-    while(args[index + 1] != NULL){
-        printf("inside while before adjustment: %s\n", args[0]);
-        args[index] = args[index + 1];
-        printf("after adjust: %s\n", args[0]);
-        printf("second index: %s\n", args[1]);
-        index++;
-    }
-    if(index != 0)
-        args[index] = NULL;
-
-    printf("after while loop first position: %s\n", args[0]);
-    printf("after while loop last position: %s\n", args[1]);
-    args[0] = check_path_type(args[0]);
-    printf("new returned path after cpt: %s\n", args[0]);
 
     if(args == NULL){
         printf("No arguments\n");
@@ -122,7 +107,7 @@ int start(char** args){
     }
     else
         while(wait(&status) != pid);
-    return 0;
+    return 1;
 }
 
 void replay(char** args) {
@@ -233,12 +218,30 @@ int check_builtin(char** args) {
         return EXIT_SUCCESS;
     else if (strcmp(args[0], "replay") == 0)
         replay(args);
-    else if(strcmp(args[0], "start") == 0)
+    else if(strcmp(args[0], "start") == 0){
+        int index = 0;
+        while(args[index + 1] != NULL){
+            printf("inside while before adjustment: %s\n", args[0]);
+            args[index] = args[index + 1];
+            printf("after adjust: %s\n", args[0]);
+            printf("second index: %s\n", args[1]);
+            index++;
+        }
+        if(index != 0)
+            args[index] = NULL;
+
+        printf("after while loop first position: %s\n", args[0]);
+        printf("after while loop last position: %s\n", args[1]);
+        args[0] = check_path_type(args[0]);
+        printf("new returned path after cpt: %s\n", args[0]);
         start(args);
+    }    
     else if(strcmp(args[0], "background") == 0)
         background(args);
     else if(strcmp(args[0], "dalek") == 0)
         kill_program(args);
+    else
+        return 0;
     return 1;
 }
 
@@ -293,7 +296,8 @@ int main() {
         args = read_line();
         printf("Before check_builtin call. \n");
         run = check_builtin(args);
-        //run = start(args);
+        if(!run)
+            run = start(args);
         printf("\n\n\nrun var: %d\n", run);
         free(args);
     }
