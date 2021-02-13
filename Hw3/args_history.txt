@@ -1,21 +1,16 @@
-byebye 
 history 
-replay 1 
-byebye 
-movetodir 
-movetodir 
+start /usr/bin/xterm 
+start /usr/bin/xterm -bg green 
+background /usr/bin/xterm 
+ps 
+dalek 4056 
+ls 
 ls 
 clear 
-history 
-movetodir /test 
-whereami 
-start /usr/bin/xterm 
-background /usr/bin/xterm 
+ps 
+ls 
 byebye 
-whereami 
-movetodir /test 
-whereami 
+ls 
+byebye 
 history 
-replay 14 
-start /usr/bin/xterm 
 byebye 

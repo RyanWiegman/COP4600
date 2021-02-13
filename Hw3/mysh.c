@@ -174,16 +174,16 @@ int background(char** args) {
     else if(pid < 0)
         perror("PID error\n");
     else
-        while(wait(&status) != pid);
+        while(wait(&status) != pid);   
     return 0;
 }
 
-/*void kill_program(char** args) {
+void kill_program(char** args) {
     //printf("Insider kill program.\n\n");
 
     int pid_number = atoi(args[1]);
     kill(pid_number, SIGKILL);
-}*/
+}
 
 int check_builtin(char** args) {
     //printf("inside check_builtins\n\n");
@@ -214,8 +214,8 @@ int check_builtin(char** args) {
     }    
     else if(strcmp(args[0], "background") == 0)
         background(args);
-   // else if(strcmp(args[0], "dalek") == 0)
-     //   kill_program(args);
+    else if(strcmp(args[0], "dalek") == 0)
+        kill_program(args);
     else
         return 0;
     return 1;
@@ -272,7 +272,6 @@ int main() {
         run = check_builtin(args);
         if(!run && !strcmp(args[0], "byebye") == 0)
             run = start(args);
-        printf("\n\n\nrun var: %d\n", run);
         free(args);
     }
    return EXIT_SUCCESS;
