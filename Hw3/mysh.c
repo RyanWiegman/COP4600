@@ -43,26 +43,46 @@ void change_dir(char** args){
     //free(test_dir);   dont know why but this clears currentdir as well.
 }
 
-void print_history() {
-    printf("Inside print history.\n\n");
-
-    char* line = NULL;
-    size_t buf_size = 0;
-    ssize_t line_count;
-    int counter = 0;
-    FILE* out_text = fopen("args_history.txt", "r");
-
-    line_count = getline(&line, &buf_size, out_text);
-    while (line_count >= 0){
-        printf("%d: %s",counter++, line);
-        line_count = getline(&line, &buf_size, out_text);
-    }
-    fclose(out_text);
-}
-
 void clear_history(){
     FILE* clear = fopen("args_history.txt", "w");
     fclose(clear);
+}
+
+void print_history(char** args) {
+    printf("Inside print history.\n\n");
+
+    if(args[0] == NULL)
+        return;
+    
+    int ctr = 0;
+    while(args[ctr] != NULL){
+        printf("nonsense.\n");
+        printf("ctr = %d  args[%d] = %s\n",ctr, ctr, args[ctr]);
+        ctr++;
+    }
+    printf("end of printing input args.\n");
+
+    if(args[1] != NULL){
+        printf("inside if args[1] = %s\n", args[1]);
+        if(strcmp(args[1], "-c") == 0)
+            clear_history();
+    }
+    else{
+        printf("inside else in print history.\n");
+
+        char* line = NULL;
+        size_t buf_size = 0;
+        ssize_t line_count;
+        int counter = 0;
+        FILE* out_text = fopen("args_history.txt", "r");
+
+        line_count = getline(&line, &buf_size, out_text);
+        while (line_count >= 0){
+            printf("%d: %s",counter++, line);
+            line_count = getline(&line, &buf_size, out_text);
+        }
+        fclose(out_text);
+    }
 }
 
 char* check_path_type(char* arg) {
@@ -111,16 +131,12 @@ void replay(char** args) {
     ssize_t line_count;
     int line_number = atoi(args[1]);
     int counter = 0, index = 0, run = 0;
-    char* args_line;
+    char* args_line = NULL;
     char** selected_args = malloc(sizeof(char*) * BUFFER);
-
-    printf("user inputed line number: %d\n", line_number);
 
     line_count = getline(&args_line, &buf_size, read);
     while (line_count >= 0){
         if(counter == line_number){
-            printf("selected line: %s\n", args_line);
-
             args_line[strlen(args_line)] = '\0';
             args_line = strtok(args_line, DELIMITER);
 
@@ -129,28 +145,28 @@ void replay(char** args) {
                 args_line = strtok(NULL, DELIMITER);
                 index++;
             }
-
-            ////////////
-            printf("before while\n");
+            selected_args[index] = NULL;
+            /*///////////
             int ind = 0;
-            while(selected_args[ind + 1]) {
-                printf("replay: inside while\n");
-                printf("selected args array: %s\n", selected_args[ind]);
+            while(selected_args[ind + 1] != NULL){
+                printf("replay while loop args: %s\n", selected_args[ind]);
                 ind++;
+                printf("end of while iteration.\n");    
             }
-            if(ind != 0)
+            if(ind != 0){
+                printf("inside if statement.\n");
                 selected_args[ind + 1] = '\0';
+                printf("last postion: %s\n", selected_args[ind]);
+            }
+            fflush(stdout);
+            printf("after while loop\n"); 
+            /////////////*/
 
-            //////////////
             run = check_builtin(selected_args);
         }
         counter++;
         line_count = getline(&args_line, &buf_size, read);
     }
-
-    printf("selected args array: %s", selected_args[0]);
-    if(selected_args[1] != NULL)
-        printf("%s\n", selected_args[1]);
 
     if(line_number > counter)
         printf("command does not exist.\n");
@@ -164,11 +180,16 @@ int background(char** args) {
     pid_t pid;
     int status;
 
+    if(args[0] == NULL){
+        printf("Error with input.\n");
+        return 0;
+    }
     printf("PID: %d\n", pid);
 
     int index = 0;
     while(args[index + 1] != NULL){
         args[index] = args[index + 1];
+        printf("adjust args array: %s\n", args[index]);
         index++;
     }
     args[index] = NULL;
@@ -191,12 +212,12 @@ int background(char** args) {
     return 0;
 }
 
-void kill_program(char** args) {
+/*void kill_program(char** args) {
     printf("Insider kill program.\n\n");
 
     int pid_number = atoi(args[1]);
     kill(pid_number, SIGKILL);
-}
+}*/
 
 int check_builtin(char** args) {
     printf("inside check_builtins\n\n");
@@ -209,11 +230,13 @@ int check_builtin(char** args) {
         print_cwd();
     else if(strcmp(args[0], "history") == 0){
         printf("inside history call.\n");
-        if(args[1] != NULL && strcmp(args[1], "-c") == 0)
-                clear_history();
+        print_history(args);
+        /*if(args[1] != NULL && strcmp(args[1], "-c") == 0){
+                printf("history inside if\n");
+                clear_history();}
         else
-           print_history();           
-        return 1;
+           print_history();  
+        return 1;  */
     }
     else if(strcmp(args[0], "byebye") == 0)
         exit(1);
@@ -233,8 +256,8 @@ int check_builtin(char** args) {
     }    
     else if(strcmp(args[0], "background") == 0)
         background(args);
-    else if(strcmp(args[0], "dalek") == 0)
-        kill_program(args);
+   // else if(strcmp(args[0], "dalek") == 0)
+     //   kill_program(args);
     else
         return 0;
     return 1;
@@ -261,15 +284,19 @@ char** read_line() {
         parse_string = strtok(NULL, DELIMITER);
         index++;
     }
+    printf("added null terimnater\n");
+    args_array[index] = NULL;
 
-    //////////////
+    /*/////////////
     int ind = 0;
     while(args_array[ind + 1] != NULL){
+        printf("full user input: %s", args_array[ind]);
         ind++;
     }
+    printf("last postions: %s\n", args_array[ind]);
     if(ind != 0)
         args_array[ind + 1] = '\0';
-    /////////////////
+    ////////////////*/
 
     for(int i = 0; i < index; i++){
         if(i > 0 && strcmp(args_array[0], "movetodir") == 0)
@@ -278,6 +305,7 @@ char** read_line() {
     }
     fprintf(intext, "\n");
     fclose(intext);
+    free(parse_string);
     return args_array;
 }
 
