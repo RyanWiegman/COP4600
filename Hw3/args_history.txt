@@ -1,1 +1,21 @@
 byebye 
+history 
+replay 1 
+byebye 
+movetodir 
+movetodir 
+ls 
+clear 
+history 
+movetodir /test 
+whereami 
+start /usr/bin/xterm 
+background /usr/bin/xterm 
+byebye 
+whereami 
+movetodir /test 
+whereami 
+history 
+replay 14 
+start /usr/bin/xterm 
+byebye 

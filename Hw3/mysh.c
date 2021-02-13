@@ -22,7 +22,7 @@ void print_cwd() {
 }
 
 void change_dir(char** args){
-    printf("inside change_dir.\n\n");
+    //printf("inside change_dir.\n\n");
     char* test_dir = malloc(sizeof(char) * BUFFER);
     int result;
 
@@ -40,7 +40,6 @@ void change_dir(char** args){
     else{
         printf("Directory does not exist.\n");
     }
-    //free(test_dir);   dont know why but this clears currentdir as well.
 }
 
 void clear_history(){
@@ -49,27 +48,16 @@ void clear_history(){
 }
 
 void print_history(char** args) {
-    printf("Inside print history.\n\n");
+    //printf("Inside print history.\n\n");
 
     if(args[0] == NULL)
         return;
-    
-    int ctr = 0;
-    while(args[ctr] != NULL){
-        printf("nonsense.\n");
-        printf("ctr = %d  args[%d] = %s\n",ctr, ctr, args[ctr]);
-        ctr++;
-    }
-    printf("end of printing input args.\n");
 
     if(args[1] != NULL){
-        printf("inside if args[1] = %s\n", args[1]);
         if(strcmp(args[1], "-c") == 0)
             clear_history();
     }
     else{
-        printf("inside else in print history.\n");
-
         char* line = NULL;
         size_t buf_size = 0;
         ssize_t line_count;
@@ -86,7 +74,7 @@ void print_history(char** args) {
 }
 
 char* check_path_type(char* arg) {
-    printf("Inside check path type.\n\n");
+    //printf("Inside check path type.\n\n");
 
     char* path = arg;
 
@@ -102,7 +90,7 @@ char* check_path_type(char* arg) {
 }
 
 int start(char** args){
-    printf("Inside start: \n\n");
+    //printf("Inside start: \n\n");
 
     pid_t pid;
     int status;
@@ -124,7 +112,7 @@ int start(char** args){
 }
 
 void replay(char** args) {
-    printf("inside replay.\n");
+    //printf("inside replay.\n");
 
     FILE* read = fopen("args_history.txt", "r");
     size_t buf_size = 0;
@@ -146,22 +134,6 @@ void replay(char** args) {
                 index++;
             }
             selected_args[index] = NULL;
-            /*///////////
-            int ind = 0;
-            while(selected_args[ind + 1] != NULL){
-                printf("replay while loop args: %s\n", selected_args[ind]);
-                ind++;
-                printf("end of while iteration.\n");    
-            }
-            if(ind != 0){
-                printf("inside if statement.\n");
-                selected_args[ind + 1] = '\0';
-                printf("last postion: %s\n", selected_args[ind]);
-            }
-            fflush(stdout);
-            printf("after while loop\n"); 
-            /////////////*/
-
             run = check_builtin(selected_args);
         }
         counter++;
@@ -175,30 +147,24 @@ void replay(char** args) {
 }
 
 int background(char** args) {
-    printf("Inside background: \n\n");
+    //printf("Inside background: \n\n");
 
     pid_t pid;
     int status;
 
     if(args[0] == NULL){
-        printf("Error with input.\n");
-        return 0;
+        printf("No arguments.\n");
+        return 1;
     }
     printf("PID: %d\n", pid);
 
     int index = 0;
     while(args[index + 1] != NULL){
         args[index] = args[index + 1];
-        printf("adjust args array: %s\n", args[index]);
         index++;
     }
     args[index] = NULL;
     args[0] = check_path_type(args[0]);
-
-    if(args == NULL){
-        printf("No arguments\n");
-        return 1;
-    }
 
     pid = fork();
     
@@ -213,14 +179,14 @@ int background(char** args) {
 }
 
 /*void kill_program(char** args) {
-    printf("Insider kill program.\n\n");
+    //printf("Insider kill program.\n\n");
 
     int pid_number = atoi(args[1]);
     kill(pid_number, SIGKILL);
 }*/
 
 int check_builtin(char** args) {
-    printf("inside check_builtins\n\n");
+    //printf("inside check_builtins\n\n");
     if(args == NULL)
         return 1;
 
@@ -228,16 +194,8 @@ int check_builtin(char** args) {
         change_dir(args);
     else if(strcmp(args[0], "whereami") == 0)
         print_cwd();
-    else if(strcmp(args[0], "history") == 0){
-        printf("inside history call.\n");
+    else if(strcmp(args[0], "history") == 0)
         print_history(args);
-        /*if(args[1] != NULL && strcmp(args[1], "-c") == 0){
-                printf("history inside if\n");
-                clear_history();}
-        else
-           print_history();  
-        return 1;  */
-    }
     else if(strcmp(args[0], "byebye") == 0)
         exit(1);
     else if (strcmp(args[0], "replay") == 0)
@@ -284,19 +242,7 @@ char** read_line() {
         parse_string = strtok(NULL, DELIMITER);
         index++;
     }
-    printf("added null terimnater\n");
     args_array[index] = NULL;
-
-    /*/////////////
-    int ind = 0;
-    while(args_array[ind + 1] != NULL){
-        printf("full user input: %s", args_array[ind]);
-        ind++;
-    }
-    printf("last postions: %s\n", args_array[ind]);
-    if(ind != 0)
-        args_array[ind + 1] = '\0';
-    ////////////////*/
 
     for(int i = 0; i < index; i++){
         if(i > 0 && strcmp(args_array[0], "movetodir") == 0)
@@ -312,7 +258,6 @@ char** read_line() {
 int main() {
     currentdir = malloc(sizeof(char) * BUFFER);
     char** args;
-    //char* currentdir;
     int run = 1, clear = 1;
     set_dir(currentdir);
 
