@@ -1,2 +1,2 @@
 # COP4600
-All COP4600 assignment.
+All COP4600 assignments.
