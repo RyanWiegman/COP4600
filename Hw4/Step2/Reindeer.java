@@ -1,4 +1,4 @@
-package Step1;
+package Step2;
 
 import java.util.Random;
 
@@ -9,9 +9,7 @@ public class Reindeer implements Runnable {
 	private SantaScenario scenario;
 	private Random rand = new Random();
 	private boolean terminate;
-
-	//The number associated with the reindeer
-	private int number;
+	private int number;		//The number associated with the reindeer
 	
 	public Reindeer(int number, SantaScenario scenario) {
 		this.number = number;

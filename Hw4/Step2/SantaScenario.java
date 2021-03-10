@@ -1,4 +1,4 @@
-package Step1;
+package Step2;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,11 +9,13 @@ public class SantaScenario {
 	public List<Reindeer> reindeers;
 	public boolean isDecember;
 	public boolean isDone;
+	public ArrayList<Elf> atDoor;
 	
 	public static void main(String args[]) {
 		SantaScenario scenario = new SantaScenario();
 		scenario.isDecember = false;
 		scenario.isDone = false;
+		scenario.atDoor = new ArrayList<>();
 
 		// create the participants
 		// Santa
