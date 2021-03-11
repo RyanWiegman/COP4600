@@ -1,5 +1,5 @@
 //import com.sun.org.apache.xml.internal.security.utils.HelperNodeList;
-package Step2;
+package Step3;
 
 public class Santa implements Runnable {
 
@@ -43,10 +43,9 @@ public class Santa implements Runnable {
 			case SLEEPING: // if sleeping, continue to sleep
 				break;
 			case WOKEN_UP_BY_ELVES: 	// FIXME: help the elves who are at the door and go back to sleep 
-				for(int index = 0; index < scenario.atDoor.size(); index++){
+				for(int index = 0; index < scenario.atDoor.size(); index++)
 					scenario.atDoor.get(index).setState(Elf.ElfState.WORKING);
-					scenario.atDoor.remove(index);
-				}
+				scenario.atDoor.clear();
 				state = SantaState.SLEEPING;
 				
 				break;
@@ -65,7 +64,6 @@ public class Santa implements Runnable {
 	 */
 	public void report() {
 		System.out.println("Santa : " + state);
-		System.out.println("arraylist size: " + scenario.atDoor.size());
 	}
 	
 	
