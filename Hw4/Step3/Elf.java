@@ -7,7 +7,7 @@ public class Elf implements Runnable {
 		WORKING, TROUBLE, AT_SANTAS_DOOR, DONE
 	};
 	private ElfState state;	 
-	private int number;		 //The number associated with the Elf
+	public int number;		 //The number associated with the Elf
 	private Random rand = new Random();
 	private SantaScenario scenario;
 	private boolean terminate;

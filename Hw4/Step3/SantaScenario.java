@@ -67,18 +67,36 @@ public class SantaScenario {
 				//	r.setTerminate(true);
 			}
 
+
+			/*int size = scenario.inTroubleList.size();
+			System.out.println("\n\nbefore introubleList");
 			if(scenario.inTroubleList.size() >= 3 && scenario.atDoor.isEmpty()){
-				for(int index = 0; index < scenario.inTroubleList.size(); index++){
+				System.out.println("introubleList trigger.");
+				for(int index = 0; index < size; index++){
+					System.out.println("size: " + size);
+					System.out.println("index: " + index);
 					scenario.atDoor.add(scenario.inTroubleList.get(index));
-					scenario.inTroubleList.get(index).setState(Elf.ElfState.AT_SANTAS_DOOR);
+					scenario.atDoor.get(index).setState(Elf.ElfState.AT_SANTAS_DOOR);
 					scenario.inTroubleList.remove(index);
+				}
+			}
+			*/
+
+			int atDoor_counter = 0;
+			int index = scenario.inTroubleList.size() - 1;
+			if(scenario.inTroubleList.size() >= 3 && scenario.atDoor.isEmpty()){
+				while(scenario.inTroubleList.size() != 0){
+					scenario.atDoor.add(scenario.inTroubleList.get(index));
+					scenario.atDoor.get(atDoor_counter).setState(Elf.ElfState.AT_SANTAS_DOOR);
+					System.out.println("\n\n deleted Elf" + scenario.inTroubleList.get(index).number);
+					scenario.inTroubleList.remove(index);
+					index--;
+					atDoor_counter++;
 				}
 			}
 
 			// print out the state:
 			System.out.println("***********  Day " + day + " *************************");
-			System.out.println("inTroubleList size: " + scenario.inTroubleList.size());
-			System.out.println("atDoor size: " + scenario.atDoor.size());
 			scenario.santa.report();
 			for(Elf elf: scenario.elves) {
 				elf.report();
@@ -86,6 +104,8 @@ public class SantaScenario {
 			/*for(Reindeer reindeer: scenario.reindeers) {
 				reindeer.report();
 			}*/
+			System.out.println("inTroubleList size: " + scenario.inTroubleList.size());
+			System.out.println("atDoor size: " + scenario.atDoor.size());
 		}
 	}
 	
