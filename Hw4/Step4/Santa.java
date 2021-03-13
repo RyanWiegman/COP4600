@@ -1,9 +1,9 @@
 //import com.sun.org.apache.xml.internal.security.utils.HelperNodeList;
-package Step3;
+package Step4;
 
 public class Santa implements Runnable {
 
-	enum SantaState {SLEEPING, READY_FOR_CHRISTMAS, WOKEN_UP_BY_ELVES, WOKEN_UP_BY_REINDEER};
+	enum SantaState {SLEEPING, READY_FOR_CHRISTMAS, WOKEN_UP_BY_ELVES, WOKEN_UP_BY_REINDEER, DONE};
 	public SantaState state;
 	private boolean terminate;
 	private SantaScenario scenario;
@@ -35,7 +35,7 @@ public class Santa implements Runnable {
 	public void run() {
 		while(true) {
 			if(terminate){
-				state = SantaState.READY_FOR_CHRISTMAS;
+				state = SantaState.DONE;
 				return;
 			}
 			// wait a day...

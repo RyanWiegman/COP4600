@@ -1,7 +1,7 @@
-package Step3;
+package Step4;
 import java.util.Random;
 
-import Step3.Santa.SantaState;
+import Step4.Santa.SantaState;
 
 public class Elf implements Runnable {
 
@@ -74,7 +74,7 @@ public class Elf implements Runnable {
 				break;
 			case AT_SANTAS_DOOR:	// FIXME: if feasible, wake up Santa
 					//scenario.santa.wakeSanta(1);
-					//scenario.santa.setState(SantaState.WOKEN_UP_BY_ELVES);		takes an extra day for santa to wake
+					//scenario.santa.setState(SantaState.WOKEN_UP_BY_ELVES);
 				break;
 			}
 		}

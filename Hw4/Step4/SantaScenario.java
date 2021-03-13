@@ -1,8 +1,8 @@
-package Step3;
+package Step4;
 import java.util.ArrayList;
 import java.util.List;
 
-import Step3.Santa.SantaState;
+import Step4.Santa.SantaState;
 
 public class SantaScenario {
 
@@ -13,7 +13,7 @@ public class SantaScenario {
 	public boolean isDone;
 	public ArrayList<Elf> atDoor;
 	public List<Elf> inTroubleList;
-	public int tempDay = 0;		//delete
+	public int tempDay = 0;
 	
 	public static void main(String args[]) {
 		SantaScenario scenario = new SantaScenario();
@@ -48,7 +48,7 @@ public class SantaScenario {
 
 		// now, start the passing of time
 		for(int day = 1; day < 500; day++) {  
-			scenario.tempDay = day;		//delete
+			scenario.tempDay = day;
 			// wait a day
 			try {
 				Thread.sleep(100);
