@@ -1,6 +1,7 @@
 package Step4;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 import Step4.Santa.SantaState;
 
@@ -13,6 +14,8 @@ public class SantaScenario {
 	public boolean isDone;
 	public ArrayList<Elf> atDoor;
 	public List<Elf> inTroubleList;
+	public Semaphore santa_door_check;
+	public Semaphore troubleList_add;
 	public int tempDay = 0;
 	
 	public static void main(String args[]) {
@@ -21,6 +24,8 @@ public class SantaScenario {
 		scenario.isDone = false;
 		scenario.atDoor = new ArrayList<>();
 		scenario.inTroubleList = new ArrayList<>();
+		scenario.santa_door_check = new Semaphore(1, true);
+		scenario.troubleList_add = new Semaphore(1, true);
 
 		// create the participants
 		// Santa
@@ -69,34 +74,25 @@ public class SantaScenario {
 				//	r.setTerminate(true);
 			}
 
-
-			/*int size = scenario.inTroubleList.size();
-			System.out.println("\n\nbefore introubleList");
-			if(scenario.inTroubleList.size() >= 3 && scenario.atDoor.isEmpty()){
-				System.out.println("introubleList trigger.");
-				for(int index = 0; index < size; index++){
-					System.out.println("size: " + size);
-					System.out.println("index: " + index);
-					scenario.atDoor.add(scenario.inTroubleList.get(index));
-					scenario.atDoor.get(index).setState(Elf.ElfState.AT_SANTAS_DOOR);
-					scenario.inTroubleList.remove(index);
-				}
-			}
-			*/
-
 			int atDoor_counter = 0;
 			int index = scenario.inTroubleList.size() - 1;
 			if(scenario.inTroubleList.size() >= 3 && scenario.atDoor.isEmpty()){
-				while(scenario.inTroubleList.size() != 0){
-					scenario.atDoor.add(scenario.inTroubleList.get(index));
-					scenario.atDoor.get(atDoor_counter).setState(Elf.ElfState.AT_SANTAS_DOOR);
-					scenario.santa.setState(SantaState.WOKEN_UP_BY_ELVES);
-					System.out.println("deleted Elf TList" + scenario.inTroubleList.get(index).number);
-					System.out.println("\n");
-					scenario.inTroubleList.remove(index);
-					index--;
-					atDoor_counter++;
-				}
+				try {
+					scenario.santa_door_check.acquire();
+					while(scenario.inTroubleList.size() != 0){
+						scenario.atDoor.add(scenario.inTroubleList.get(index));
+						scenario.atDoor.get(atDoor_counter).setState(Elf.ElfState.AT_SANTAS_DOOR);
+						scenario.santa.setState(SantaState.WOKEN_UP_BY_ELVES);
+						System.out.println("deleted Elf TList" + scenario.inTroubleList.get(index).number);
+						System.out.println("\n");
+						scenario.inTroubleList.remove(index);
+						index--;
+						atDoor_counter++;
+					}
+					scenario.santa_door_check.release();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}	
 			}
 
 			// print out the state:

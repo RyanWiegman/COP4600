@@ -46,23 +46,23 @@ public class Santa implements Runnable {
 				e.printStackTrace();
 			}
 			switch(state) {
-			case SLEEPING: // if sleeping, continue to sleep
-				break;
-			case WOKEN_UP_BY_ELVES: 	// FIXME: help the elves who are at the door and go back to sleep 
-				for(int index = 0; index < scenario.atDoor.size(); index++)
-					scenario.atDoor.get(index).setState(Elf.ElfState.WORKING);
-				scenario.atDoor.clear();
-				if(scenario.atDoor.isEmpty())
-					System.out.println("santa state: " + state + "\n atDoor list in empty.\n");
-				else
-					System.out.println("atDoor list not empty when should be. \n");
-				state = SantaState.SLEEPING;
-				break;
-			case WOKEN_UP_BY_REINDEER: 
-				// FIXME: assemble the reindeer to the sleigh then change state to ready 
-				break;
-			case READY_FOR_CHRISTMAS: // nothing more to be done
-				break;
+				case SLEEPING: // if sleeping, continue to sleep
+					break;
+				case WOKEN_UP_BY_ELVES: 	// FIXME: help the elves who are at the door and go back to sleep 
+					for(int index = 0; index < scenario.atDoor.size(); index++)
+						scenario.atDoor.get(index).setState(Elf.ElfState.WORKING);
+					scenario.atDoor.clear();
+					if(scenario.atDoor.isEmpty())
+						System.out.println("santa state: " + state + "\n atDoor list in empty.\n");
+					else
+						System.out.println("atDoor list not empty when should be. \n");
+					state = SantaState.SLEEPING;
+					break;
+				case WOKEN_UP_BY_REINDEER: 
+					// FIXME: assemble the reindeer to the sleigh then change state to ready 
+					break;
+				case READY_FOR_CHRISTMAS: // nothing more to be done
+					break;
 			}
 		}
 	}

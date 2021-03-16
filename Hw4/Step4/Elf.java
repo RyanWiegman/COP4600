@@ -55,7 +55,7 @@ public class Elf implements Runnable {
   			// TODO Auto-generated catch block
   			e.printStackTrace();
   		}
-			switch (state) {
+		switch (state) {
 			case WORKING:
 				// at each day, there is a 1% chance that an elf runs into
 				// trouble.
@@ -66,9 +66,15 @@ public class Elf implements Runnable {
 				}
 				break;
 			case TROUBLE:		// FIXME: if possible, move to Santa's door
-				if(!inTrouble){
-					scenario.inTroubleList.add(this);
-					inTrouble = true;
+				try {
+					this.scenario.troubleList_add.acquire();
+					if(!inTrouble){
+						scenario.inTroubleList.add(this);
+						inTrouble = true;
+					}
+					this.scenario.troubleList_add.release();
+				} catch (Exception e) {
+					//TODO: handle exception
 				}
 					
 				break;
