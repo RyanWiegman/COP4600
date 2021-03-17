@@ -1,8 +1,6 @@
 package Step4;
 import java.util.Random;
 
-import Step4.Santa.SantaState;
-
 public class Elf implements Runnable {
 
 	enum ElfState {
@@ -48,7 +46,7 @@ public class Elf implements Runnable {
 				return;
 			}
 				
-      // wait a day
+      	// wait a day
   		try {
   			Thread.sleep(100);
   		} catch (InterruptedException e) {
@@ -62,7 +60,6 @@ public class Elf implements Runnable {
 				inTrouble = false;
 				if (rand.nextDouble() < 0.01) {
 					state = ElfState.TROUBLE;
-					System.out.println("\nlist day in trouble" + scenario.tempDay);
 				}
 				break;
 			case TROUBLE:		// FIXME: if possible, move to Santa's door
@@ -90,7 +87,7 @@ public class Elf implements Runnable {
 	 * Report about my state
 	 */
 	public void report() {
-		System.out.println("Elf " + number + " : " + state + ", introuble: " + inTrouble);
+		System.out.println("Elf " + number + " : " + state);
 	}
 
 }

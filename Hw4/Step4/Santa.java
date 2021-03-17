@@ -3,7 +3,7 @@ package Step4;
 
 public class Santa implements Runnable {
 
-	enum SantaState {SLEEPING, READY_FOR_CHRISTMAS, WOKEN_UP_BY_ELVES, WOKEN_UP_BY_REINDEER, DONE};
+	enum SantaState {SLEEPING, READY_FOR_CHRISTMAS, WOKEN_UP_BY_ELVES, WOKEN_UP_BY_REINDEER};
 	public SantaState state;
 	private boolean terminate;
 	private SantaScenario scenario;
@@ -35,7 +35,7 @@ public class Santa implements Runnable {
 	public void run() {
 		while(true) {
 			if(terminate){
-				state = SantaState.DONE;
+				state = SantaState.READY_FOR_CHRISTMAS;
 				return;
 			}
 			// wait a day...
@@ -52,10 +52,6 @@ public class Santa implements Runnable {
 					for(int index = 0; index < scenario.atDoor.size(); index++)
 						scenario.atDoor.get(index).setState(Elf.ElfState.WORKING);
 					scenario.atDoor.clear();
-					if(scenario.atDoor.isEmpty())
-						System.out.println("santa state: " + state + "\n atDoor list in empty.\n");
-					else
-						System.out.println("atDoor list not empty when should be. \n");
 					state = SantaState.SLEEPING;
 					break;
 				case WOKEN_UP_BY_REINDEER: 
