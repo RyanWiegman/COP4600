@@ -54,8 +54,10 @@ public class Santa implements Runnable {
 					scenario.atDoor.clear();
 					state = SantaState.SLEEPING;
 					break;
-				case WOKEN_UP_BY_REINDEER: 
-					// FIXME: assemble the reindeer to the sleigh then change state to ready 
+				case WOKEN_UP_BY_REINDEER: // FIXME: assemble the reindeer to the sleigh then change state to ready 
+					for(Reindeer r : scenario.reindeers)
+						r.setState(Reindeer.ReindeerState.AT_THE_SLEIGH);
+					state = SantaState.READY_FOR_CHRISTMAS;
 					break;
 				case READY_FOR_CHRISTMAS: // nothing more to be done
 					break;

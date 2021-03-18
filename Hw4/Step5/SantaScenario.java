@@ -14,8 +14,11 @@ public class SantaScenario {
 	public boolean isDone;
 	public ArrayList<Elf> atDoor;
 	public List<Elf> inTroubleList;
+	public int warming_shed_ctr;
+
 	public Semaphore santa_door_check;
 	public Semaphore troubleList_add;
+	public Semaphore reindeer_sem;
 	
 	public static void main(String args[]) {
 		SantaScenario scenario = new SantaScenario();
@@ -23,8 +26,11 @@ public class SantaScenario {
 		scenario.isDone = false;
 		scenario.atDoor = new ArrayList<>();
 		scenario.inTroubleList = new ArrayList<>();
+		scenario.warming_shed_ctr = 0;
+
 		scenario.santa_door_check = new Semaphore(1, true);
 		scenario.troubleList_add = new Semaphore(1, true);
+		scenario.reindeer_sem = new Semaphore(0, true);
 
 		// create the participants
 		// Santa
@@ -64,13 +70,16 @@ public class SantaScenario {
 				scenario.isDecember = true;
 			}
 
-			if(day > 370){
+			if(day >= 370){
 				scenario.santa.setTerminate(true);
 				for(Elf e : scenario.elves)
 					e.setTerminate(true);
 				for(Reindeer r : scenario.reindeers)
 					r.setTerminate(true);
 			}
+
+			if(scenario.warming_shed_ctr > 8)
+				scenario.reindeer_sem.release();
 
 			int atDoor_counter = 0;
 			int index = scenario.inTroubleList.size() - 1;

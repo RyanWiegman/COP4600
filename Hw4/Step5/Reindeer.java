@@ -18,6 +18,10 @@ public class Reindeer implements Runnable {
 		this.terminate = false;
 	}
 
+	public void setState(ReindeerState state) {
+		this.state = state;
+	}
+
 	public void setTerminate(boolean terminate) {
 		this.terminate = terminate;
 	}
@@ -28,32 +32,38 @@ public class Reindeer implements Runnable {
 			if(terminate)
 				return;
 				
-		// wait a day
-		try {
-			Thread.sleep(100);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// see what we need to do:
-		switch(state) {
-		case AT_BEACH: { // if it is December, the reindeer might think about returning from the beach
-			if (scenario.isDecember) {
-				if (rand.nextDouble() < 0.1) {
-					state = ReindeerState.AT_WARMING_SHED;
-				}
+			// wait a day
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			break;			
+			// see what we need to do:
+			switch(state) {
+				case AT_BEACH: { // if it is December, the reindeer might think about returning from the beach
+					if (scenario.isDecember) {
+						if (rand.nextDouble() < 0.1) {
+							state = ReindeerState.AT_WARMING_SHED;
+							scenario.warming_shed_ctr++;
+						}
+					}
+					break;			
+				}
+				case AT_WARMING_SHED: // if all the reindeer are home, wake up santa
+				try {
+					scenario.reindeer_sem.acquire();
+					scenario.santa.wakeSanta(0);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+					break;
+				case AT_THE_SLEIGH: // keep pulling
+					break;
+			}
 		}
-		case AT_WARMING_SHED: 
-			// if all the reindeer are home, wake up santa
-			break;
-		case AT_THE_SLEIGH: 
-			// keep pulling
-			break;
-		}
-		}
-	};
+	}
 	
 	/**
 	 * Report about my state

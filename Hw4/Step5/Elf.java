@@ -46,39 +46,39 @@ public class Elf implements Runnable {
 				return;
 			}
 				
-      	// wait a day
-  		try {
-  			Thread.sleep(100);
-  		} catch (InterruptedException e) {
-  			// TODO Auto-generated catch block
-  			e.printStackTrace();
-  		}
-		switch (state) {
-			case WORKING:
-				// at each day, there is a 1% chance that an elf runs into
-				// trouble.
-				inTrouble = false;
-				if (rand.nextDouble() < 0.01) {
-					state = ElfState.TROUBLE;
-				}
-				break;
-			case TROUBLE:		// FIXME: if possible, move to Santa's door
-				try {
-					this.scenario.troubleList_add.acquire();
-					if(!inTrouble){
-						scenario.inTroubleList.add(this);
-						inTrouble = true;
+			// wait a day
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			switch (state) {
+				case WORKING:
+					// at each day, there is a 1% chance that an elf runs into
+					// trouble.
+					inTrouble = false;
+					if (rand.nextDouble() < 0.01) {
+						state = ElfState.TROUBLE;
 					}
-					this.scenario.troubleList_add.release();
-				} catch (Exception e) {
-					//TODO: handle exception
-				}
-					
-				break;
-			case AT_SANTAS_DOOR:	// FIXME: if feasible, wake up Santa
-					//scenario.santa.wakeSanta(1);
-					//scenario.santa.setState(SantaState.WOKEN_UP_BY_ELVES);
-				break;
+					break;
+				case TROUBLE:		// FIXME: if possible, move to Santa's door
+					try {
+						this.scenario.troubleList_add.acquire();
+						if(!inTrouble){
+							scenario.inTroubleList.add(this);
+							inTrouble = true;
+						}
+						this.scenario.troubleList_add.release();
+					} catch (Exception e) {
+						//TODO: handle exception
+					}
+						
+					break;
+				case AT_SANTAS_DOOR:	// FIXME: if feasible, wake up Santa
+						//scenario.santa.wakeSanta(1);
+						//scenario.santa.setState(SantaState.WOKEN_UP_BY_ELVES);
+					break;
 			}
 		}
 	}
