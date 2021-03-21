@@ -57,27 +57,33 @@ public class Elf implements Runnable {
 				case WORKING:
 					// at each day, there is a 1% chance that an elf runs into
 					// trouble.
-					inTrouble = false;
 					if (rand.nextDouble() < 0.01) {
 						state = ElfState.TROUBLE;
+						scenario.inTroubleList.add(this);
 					}
 					break;
 				case TROUBLE:		// FIXME: if possible, move to Santa's door
 					try {
-						this.scenario.troubleList_add.acquire();
-						if(!inTrouble){
-							scenario.inTroubleList.add(this);
-							inTrouble = true;
+						System.out.println("ELF:" + number + "WAITING....\n");
+						scenario.santa_door_check.acquire();
+						System.out.println("DONE WAITING.\n");
+						int troubleList_delete = scenario.inTroubleList.size() - 1;
+						int index = 0;
+						while(scenario.inTroubleList.size() != 0){
+							scenario.atDoor.add(scenario.inTroubleList.get(troubleList_delete));
+							scenario.atDoor.get(index).setState(Elf.ElfState.AT_SANTAS_DOOR);
+							scenario.inTroubleList.remove(troubleList_delete);
+							index++;
+							troubleList_delete--;
 						}
-						this.scenario.troubleList_add.release();
-					} catch (Exception e) {
-						//TODO: handle exception
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
-						
 					break;
 				case AT_SANTAS_DOOR:	// FIXME: if feasible, wake up Santa
-						//scenario.santa.wakeSanta(1);
-						//scenario.santa.setState(SantaState.WOKEN_UP_BY_ELVES);
+					System.out.println("WAKING SANTA.");
+					scenario.santa.wakeSanta(1);
 					break;
 			}
 		}

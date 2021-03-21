@@ -17,7 +17,7 @@ public class SantaScenario {
 	public int warming_shed_ctr;
 
 	public Semaphore santa_door_check;
-	public Semaphore troubleList_add;
+	public Semaphore santa_help;
 	public Semaphore reindeer_sem;
 	
 	public static void main(String args[]) {
@@ -28,8 +28,8 @@ public class SantaScenario {
 		scenario.inTroubleList = new ArrayList<>();
 		scenario.warming_shed_ctr = 0;
 
-		scenario.santa_door_check = new Semaphore(1, true);
-		scenario.troubleList_add = new Semaphore(1, true);
+		scenario.santa_door_check = new Semaphore(0, true);
+		scenario.santa_help = new Semaphore(0, true);
 		scenario.reindeer_sem = new Semaphore(0, true);
 
 		// create the participants
@@ -57,7 +57,7 @@ public class SantaScenario {
 		}
 
 		// now, start the passing of time
-		for(int day = 1; day < 500; day++) {  
+		for(int day = 1; day < 100; day++) {  
 			// wait a day
 			try {
 				Thread.sleep(100);
@@ -72,8 +72,11 @@ public class SantaScenario {
 
 			if(day >= 370){
 				scenario.santa.setTerminate(true);
-				for(Elf e : scenario.elves)
+				for(Elf e : scenario.elves){
 					e.setTerminate(true);
+					scenario.santa_door_check.release();
+				}
+					
 				for(Reindeer r : scenario.reindeers)
 					r.setTerminate(true);
 			}
@@ -81,6 +84,18 @@ public class SantaScenario {
 			if(scenario.warming_shed_ctr > 8)
 				scenario.reindeer_sem.release();
 
+			System.out.println("\n\nstart of day troubleList: " + scenario.inTroubleList.size());
+			System.out.println("CHECK 1");
+			if(scenario.inTroubleList.size() > 2 && scenario.atDoor.isEmpty()){
+				scenario.santa_door_check.release();
+			}
+			
+			System.out.println("CHECK 2");
+			if(!scenario.atDoor.isEmpty())
+				scenario.santa_help.release();
+					
+
+			/*        DO NOT DELETE
 			int atDoor_counter = 0;
 			int index = scenario.inTroubleList.size() - 1;
 			if(scenario.inTroubleList.size() >= 3 && scenario.atDoor.isEmpty()){
@@ -99,6 +114,7 @@ public class SantaScenario {
 					e.printStackTrace();
 				}	
 			}
+			*/
 
 			// print out the state:
 			System.out.println("***********  Day " + day + " *************************");
@@ -109,6 +125,8 @@ public class SantaScenario {
 			for(Reindeer reindeer: scenario.reindeers) {
 				reindeer.report();
 			}
+			System.out.println("\nintrouble List: " + scenario.inTroubleList.size());
+			System.out.println("atDoor: " + scenario.atDoor.size());
 		}
 	}
 	
