@@ -64,9 +64,7 @@ public class Elf implements Runnable {
 					break;
 				case TROUBLE:		// FIXME: if possible, move to Santa's door
 					try {
-						System.out.println("ELF:" + number + "WAITING....\n");
 						scenario.santa_door_check.acquire();
-						System.out.println("DONE WAITING.\n");
 						int troubleList_delete = scenario.inTroubleList.size() - 1;
 						int index = 0;
 						while(scenario.inTroubleList.size() != 0){
@@ -82,7 +80,6 @@ public class Elf implements Runnable {
 					}
 					break;
 				case AT_SANTAS_DOOR:	// FIXME: if feasible, wake up Santa
-					System.out.println("WAKING SANTA.");
 					scenario.santa.wakeSanta(1);
 					break;
 			}

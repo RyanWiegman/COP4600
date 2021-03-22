@@ -51,16 +51,14 @@ public class Santa implements Runnable {
 				case WOKEN_UP_BY_ELVES: 	// FIXME: help the elves who are at the door and go back to sleep 
 					try {
 						scenario.santa_help.acquire();
-						System.out.println("SANTA BIG HELP....");
 						for(int index = 0; index < scenario.atDoor.size(); index++)
 							scenario.atDoor.get(index).setState(Elf.ElfState.WORKING);
 						scenario.atDoor.clear();
+						state = SantaState.SLEEPING;
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
-					state = SantaState.SLEEPING;
 					break;
 				case WOKEN_UP_BY_REINDEER: // FIXME: assemble the reindeer to the sleigh then change state to ready 
 					for(Reindeer r : scenario.reindeers)

@@ -57,7 +57,7 @@ public class SantaScenario {
 		}
 
 		// now, start the passing of time
-		for(int day = 1; day < 100; day++) {  
+		for(int day = 1; day < 500; day++) {  
 			// wait a day
 			try {
 				Thread.sleep(100);
@@ -84,16 +84,13 @@ public class SantaScenario {
 			if(scenario.warming_shed_ctr > 8)
 				scenario.reindeer_sem.release();
 
-			System.out.println("\n\nstart of day troubleList: " + scenario.inTroubleList.size());
-			System.out.println("CHECK 1");
 			if(scenario.inTroubleList.size() > 2 && scenario.atDoor.isEmpty()){
 				scenario.santa_door_check.release();
 			}
 			
-			System.out.println("CHECK 2");
-			if(!scenario.atDoor.isEmpty())
+			if(!scenario.atDoor.isEmpty() && scenario.santa.state == Santa.SantaState.WOKEN_UP_BY_ELVES){
 				scenario.santa_help.release();
-					
+			}				
 
 			/*        DO NOT DELETE
 			int atDoor_counter = 0;
@@ -125,8 +122,6 @@ public class SantaScenario {
 			for(Reindeer reindeer: scenario.reindeers) {
 				reindeer.report();
 			}
-			System.out.println("\nintrouble List: " + scenario.inTroubleList.size());
-			System.out.println("atDoor: " + scenario.atDoor.size());
 		}
 	}
 	
