@@ -15,7 +15,8 @@ public class SantaScenario {
 	public ArrayList<Elf> atDoor;
 	public List<Elf> inTroubleList;
 	public Semaphore santa_door_check;
-	public Semaphore troubleList_add;
+	public Semaphore wake_santa;
+	public Semaphore santa_help;
 	
 	public static void main(String args[]) {
 		SantaScenario scenario = new SantaScenario();
@@ -23,8 +24,10 @@ public class SantaScenario {
 		scenario.isDone = false;
 		scenario.atDoor = new ArrayList<>();
 		scenario.inTroubleList = new ArrayList<>();
-		scenario.santa_door_check = new Semaphore(1, true);
-		scenario.troubleList_add = new Semaphore(1, true);
+
+		scenario.santa_door_check = new Semaphore(0, true);
+		scenario.wake_santa = new Semaphore(1, true);
+		scenario.santa_help = new Semaphore(0, true);
 
 		// create the participants
 		// Santa
@@ -66,29 +69,21 @@ public class SantaScenario {
 
 			if(day > 370){
 				scenario.santa.setTerminate(true);
-				for(Elf e : scenario.elves)
+				for(Elf e : scenario.elves){
+					scenario.santa_door_check.release();
 					e.setTerminate(true);
+				}
+					
 				for(Reindeer r : scenario.reindeers)
 					r.setTerminate(true);
 			}
 
-			int atDoor_counter = 0;
-			int index = scenario.inTroubleList.size() - 1;
 			if(scenario.inTroubleList.size() >= 3 && scenario.atDoor.isEmpty()){
-				try {
-					scenario.santa_door_check.acquire();
-					while(scenario.inTroubleList.size() != 0){
-						scenario.atDoor.add(scenario.inTroubleList.get(index));
-						scenario.atDoor.get(atDoor_counter).setState(Elf.ElfState.AT_SANTAS_DOOR);
-						scenario.santa.setState(SantaState.WOKEN_UP_BY_ELVES);
-						scenario.inTroubleList.remove(index);
-						index--;
-						atDoor_counter++;
-					}
-					scenario.santa_door_check.release();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}	
+				scenario.santa_door_check.release();
+			}
+			
+			if(!scenario.atDoor.isEmpty() && scenario.atDoor.size() >= 3){
+				scenario.santa_help.release();
 			}
 
 			// print out the state:

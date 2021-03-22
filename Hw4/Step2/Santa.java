@@ -3,8 +3,8 @@ package Step2;
 
 public class Santa implements Runnable {
 
-	enum SantaState {SLEEPING, READY_FOR_CHRISTMAS, WOKEN_UP_BY_ELVES, WOKEN_UP_BY_REINDEER, DONE};
-	private SantaState state;
+	enum SantaState {SLEEPING, READY_FOR_CHRISTMAS, WOKEN_UP_BY_ELVES, WOKEN_UP_BY_REINDEER};
+	public SantaState state;
 	private boolean terminate;
 	private SantaScenario scenario;
 	
@@ -28,10 +28,6 @@ public class Santa implements Runnable {
 	@Override
 	public void run() {
 		while(true) {
-			if(terminate){
-				state = SantaState.DONE;
-				return;
-			}
 			// wait a day...
 			try {
 				Thread.sleep(100);
@@ -39,6 +35,12 @@ public class Santa implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
+			if(terminate){
+				state = SantaState.READY_FOR_CHRISTMAS;
+				return;
+			}
+
 			switch(state) {
 			case SLEEPING: // if sleeping, continue to sleep
 				break;
@@ -47,7 +49,9 @@ public class Santa implements Runnable {
 					scenario.atDoor.get(index).setState(Elf.ElfState.WORKING);
 					scenario.atDoor.remove(index);
 				}
-				state = SantaState.SLEEPING;
+				
+				if(scenario.atDoor.isEmpty())
+					state = SantaState.SLEEPING;
 				
 				break;
 			case WOKEN_UP_BY_REINDEER: 
@@ -65,7 +69,6 @@ public class Santa implements Runnable {
 	 */
 	public void report() {
 		System.out.println("Santa : " + state);
-		System.out.println("arraylist size: " + scenario.atDoor.size());
 	}
 	
 	

@@ -80,7 +80,8 @@ public class Elf implements Runnable {
 					}
 					break;
 				case AT_SANTAS_DOOR:	// FIXME: if feasible, wake up Santa
-					scenario.santa.wakeSanta(1);
+					if(scenario.atDoor.size() == 3)
+						scenario.santa.state = Santa.SantaState.WOKEN_UP_BY_ELVES;
 					break;
 			}
 		}

@@ -39,35 +39,35 @@ public class Elf implements Runnable {
 	@Override
 	public void run() {
 		while (true) {
+			// wait a day
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 			if(terminate){
 				state = ElfState.DONE;
 				return;
 			}
 				
-      // wait a day
-  		try {
-  			Thread.sleep(100);
-  		} catch (InterruptedException e) {
-  			// TODO Auto-generated catch block
-  			e.printStackTrace();
-  		}
 			switch (state) {
-			case WORKING:
-				// at each day, there is a 1% chance that an elf runs into
-				// trouble.
-				if (rand.nextDouble() < 0.01) {
-					state = ElfState.TROUBLE;
+				case WORKING:
+					// at each day, there is a 1% chance that an elf runs into
+					// trouble.
+					if (rand.nextDouble() < 0.01) {
+						state = ElfState.TROUBLE;
+					}
+					break;
+				case TROUBLE:		// FIXME: if possible, move to Santa's door
+					state = ElfState.AT_SANTAS_DOOR;
+					scenario.atDoor.add(this);
+					break;
+				case AT_SANTAS_DOOR:	// FIXME: if feasible, wake up Santa
+					scenario.santa.wakeSanta(1);
+					break;
 				}
-				break;
-			case TROUBLE:		// FIXME: if possible, move to Santa's door
-				state = ElfState.AT_SANTAS_DOOR;
-				scenario.atDoor.add(this);
-				break;
-			case AT_SANTAS_DOOR:
-				scenario.santa.wakeSanta(1);
-				// FIXME: if feasible, wake up Santa
-				break;
-			}
 		}
 	}
 

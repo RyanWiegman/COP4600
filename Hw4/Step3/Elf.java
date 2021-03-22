@@ -61,8 +61,7 @@ public class Elf implements Runnable {
 				// trouble.
 				inTrouble = false;
 				if (rand.nextDouble() < 0.01) {
-					state = ElfState.TROUBLE;
-					System.out.println("\nlist day in trouble" + scenario.tempDay);
+					state = ElfState.TROUBLE;					
 				}
 				break;
 			case TROUBLE:		// FIXME: if possible, move to Santa's door
@@ -70,11 +69,23 @@ public class Elf implements Runnable {
 					scenario.inTroubleList.add(this);
 					inTrouble = true;
 				}
+				
+				if(scenario.inTroubleList.size() == 3){
+					int troubleList_delete = scenario.inTroubleList.size() - 1;
+					int index = 0;
+					while(scenario.inTroubleList.size() != 0){
+						scenario.atDoor.add(scenario.inTroubleList.get(troubleList_delete));
+						scenario.atDoor.get(index).setState(Elf.ElfState.AT_SANTAS_DOOR);
+						scenario.inTroubleList.remove(troubleList_delete);
+						index++;
+						troubleList_delete--;
+					}
+				}
 					
 				break;
 			case AT_SANTAS_DOOR:	// FIXME: if feasible, wake up Santa
-					//scenario.santa.wakeSanta(1);
-					//scenario.santa.setState(SantaState.WOKEN_UP_BY_ELVES);		takes an extra day for santa to wake
+				if(scenario.atDoor.size() == 3)
+					scenario.santa.state = Santa.SantaState.WOKEN_UP_BY_ELVES;
 				break;
 			}
 		}
@@ -84,7 +95,7 @@ public class Elf implements Runnable {
 	 * Report about my state
 	 */
 	public void report() {
-		System.out.println("Elf " + number + " : " + state + ", introuble: " + inTrouble);
+		System.out.println("Elf " + number + " : " + state);
 	}
 
 }
