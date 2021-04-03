@@ -1,0 +1,16 @@
+history 
+start /usr/bin/xterm 
+start /usr/bin/xterm -bg green 
+background /usr/bin/xterm 
+ps 
+dalek 4056 
+ls 
+ls 
+clear 
+ps 
+ls 
+byebye 
+ls 
+byebye 
+history 
+byebye 
