@@ -16,3 +16,45 @@ dwelt args_history.txt
 dwelt kd 
 dwelt test 
 whereami 
+maik t 
+maik 
+maik t 
+maik t.txt 
+maik t 
+maik t 
+maik t 
+maik t 
+maik args_history.txt 
+maik args_history 
+maik test.txt 
+maik test 
+maik test 
+maik test 
+maik test.txt 
+maik test 
+maik args_history.txt 
+maik test.txt 
+help 
+dwelt test.txt 
+dwelt args_history.txt 
+maik text.txt 
+maik text.txt 
+maik text.txt 
+maik text.txt 
+maik text.txt 
+maik text.txt 
+maik text.txt 
+maik text.txt 
+maik text.txt 
+maik args_history.txt 
+maik test.txt 
+maik test.txt 
+maik test.txt 
+maik test 
+maik test.txt 
+ls 
+rm test 
+ls 
+rm test.txt 
+ls 
+byebye 

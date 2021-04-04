@@ -212,6 +212,29 @@ void dwelt_check(char** args){
         printf("Dwelt not\n");
 }
 
+void maik_file(char** args){
+    if(args == NULL)
+        return;
+
+    int index = 0;
+    while(args[index + 1] != NULL){
+        args[index] = args[index + 1];
+        index++;
+    }
+    if(index != 0)
+        args[index] = NULL;
+    args[0] = check_path_type(args[0]); 
+
+    int result = access(args[0], F_OK);
+    if(!result)
+        printf("ERROR: FILE ALREADY EXISTS.\n");
+    else{
+        FILE* file = fopen(args[0], "w");
+        fprintf(file, "%s", "Draft");
+        fclose(file);
+    }
+}
+
 int check_builtin(char** args) {
     //printf("inside check_builtins\n\n");
     if(args == NULL)
@@ -245,6 +268,8 @@ int check_builtin(char** args) {
         kill_program(args);
     else if(strcmp(args[0], "dwelt") == 0)
         dwelt_check(args);
+    else if(strcmp(args[0], "maik") == 0)
+        maik_file(args);
     else
         return 0;
     return 1;
