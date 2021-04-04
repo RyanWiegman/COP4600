@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <sys/stat.h>
 
 #define DELIMITER " \n"
 #define BUFFER 1024
@@ -185,6 +186,32 @@ void kill_program(char** args) {
     kill(pid_number, SIGKILL);
 }
 
+void dwelt_check(char** args){
+    if(args == NULL)
+        return;
+
+    int index = 0;
+    while(args[index + 1] != NULL){
+        args[index] = args[index + 1];
+        index++;
+    }
+    if(index != 0)
+        args[index] = NULL;
+    args[0] = check_path_type(args[0]);
+    
+    struct stat path_stat;
+    if(stat(args[0], &path_stat) == 0 && S_ISDIR(path_stat.st_mode)){
+        printf("Abode is.\n");
+        return;
+    } 
+    
+    int result = access(args[0], F_OK);
+    if(!result)
+        printf("Dwelt indeed.\n");
+    else
+        printf("Dwelt not\n");
+}
+
 int check_builtin(char** args) {
     //printf("inside check_builtins\n\n");
     if(args == NULL)
@@ -216,6 +243,8 @@ int check_builtin(char** args) {
         background(args);
     else if(strcmp(args[0], "dalek") == 0)
         kill_program(args);
+    else if(strcmp(args[0], "dwelt") == 0)
+        dwelt_check(args);
     else
         return 0;
     return 1;

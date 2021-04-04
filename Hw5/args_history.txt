@@ -1,16 +1,18 @@
-history 
-start /usr/bin/xterm 
-start /usr/bin/xterm -bg green 
-background /usr/bin/xterm 
-ps 
-dalek 4056 
+dwelt test 
+dwelt kds 
+dwelt test 
 ls 
+dwelt args 
+dwelt test 
+dwelt args 
+dwelt test 
+dwelt args 
+dwelt test 
+dwelt kd 
+dwelt args_history 
 ls 
-clear 
-ps 
-ls 
-byebye 
-ls 
-byebye 
-history 
-byebye 
+dwelt args_history.txt 
+dwelt args_history.txt 
+dwelt kd 
+dwelt test 
+whereami 
