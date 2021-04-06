@@ -58,3 +58,51 @@ ls
 rm test.txt 
 ls 
 byebye 
+ls 
+coppy test.txt test2.txt 
+coppy test.txt test2.txt 
+coppy test.txt test2.txt 
+coppy test.txt test2.txt 
+coppy test.txt test2.txt 
+ls 
+byebye 
+movetodir /test 
+whereami 
+movetodir /bi 
+movetodir /bin 
+whereami 
+dwelt /home/ryan/Python/ 
+coppy test.txt t.txt 
+ls 
+coppy test.txt t.txt 
+byebye 
+coppy test.txt t.txt 
+ls 
+coppy test.txt t.txt 
+ls 
+dwelt /ryan/Python 
+/home/ryan/Python 
+dwelt /home/ryan/Python 
+whereami 
+maik /home/ryan/COP4600/Hw5 
+ls 
+maik /home/ryan/COP4600/Hw5/test.txt 
+ls 
+pico 
+tetsme/ryan/COP4600/Hw5/test.tx 
+tetsme/ryan/COP4600/Hw5/test.t 
+tetsme/ryan/COP4600/Hw5/test. 
+tetsme/ryan/COP4600/Hw5/test 
+tetsme/ryan/COP4600/Hw5/tes 
+tetsme/ryan/COP4600/Hw5/te 
+tetsme/ryan/COP4600/Hw5/t 
+tetsme/ryan/COP4600/Hw5/ 
+tetsme/ryan/COP4600/Hw5 
+teme/ryan/COP4600/Hw 
+teme/ryan/COP4600/H 
+teme/ryan/COP4600/ 
+coppy test.txt /home/ryan/COP4600/Hw5/test/t.txt 
+ls 
+coppy test.txt /home/ryan/COP4600/Hw5/t/test2.txt 
+history 
+replay 105 

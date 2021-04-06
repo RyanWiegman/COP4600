@@ -235,6 +235,36 @@ void maik_file(char** args){
     }
 }
 
+void coppy_file(char** args){
+    printf("ARGS: %s %s\n", args[1], args[2]);
+
+    if(args == NULL)
+        return;
+
+    int read_result = access(args[1], F_OK);
+    int write_result = access(args[2], F_OK);
+    if(read_result == 0 && write_result == -1){
+        FILE* read_file = fopen(args[1], "r");
+        FILE* write_file = fopen(args[2], "w");
+
+        do{
+            printf("INSIDE DO-WHILE LOOP\n");
+            char read_char = fgetc(read_file);
+
+            if(read_char == EOF)
+                break;
+            fputc(read_char, write_file);
+        }while(1);
+
+        fclose(read_file);
+        fclose(write_file);
+    }
+    else if(read_result == -1)
+        printf("SOURCE FILE NOT FOUND.\n");
+    else if(!write_result)
+        printf("DESTINATION FILE ALREADY EXIST.\n");
+}
+
 int check_builtin(char** args) {
     //printf("inside check_builtins\n\n");
     if(args == NULL)
@@ -270,6 +300,8 @@ int check_builtin(char** args) {
         dwelt_check(args);
     else if(strcmp(args[0], "maik") == 0)
         maik_file(args);
+    else if(strcmp(args[0], "coppy") == 0)
+        coppy_file(args);
     else
         return 0;
     return 1;
