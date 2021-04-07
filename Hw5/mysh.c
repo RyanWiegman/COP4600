@@ -236,33 +236,58 @@ void maik_file(char** args){
 }
 
 void coppy_file(char** args){
-    printf("ARGS: %s %s\n", args[1], args[2]);
-
     if(args == NULL)
         return;
 
-    int read_result = access(args[1], F_OK);
-    int write_result = access(args[2], F_OK);
-    if(read_result == 0 && write_result == -1){
-        FILE* read_file = fopen(args[1], "r");
-        FILE* write_file = fopen(args[2], "w");
-
-        do{
-            printf("INSIDE DO-WHILE LOOP\n");
-            char read_char = fgetc(read_file);
-
-            if(read_char == EOF)
-                break;
-            fputc(read_char, write_file);
-        }while(1);
-
-        fclose(read_file);
-        fclose(write_file);
+    char* temp_string = malloc(sizeof(char) * 100);
+    strcpy(temp_string, args[2]);
+    temp_string = check_path_type(temp_string);
+    int index = 0;
+    int counter = 0;
+    int ctr = 0;
+    while(temp_string[index] != '\0'){
+        if(temp_string[index] == '/')
+            counter++;
+        index++;
     }
-    else if(read_result == -1)
-        printf("SOURCE FILE NOT FOUND.\n");
-    else if(!write_result)
-        printf("DESTINATION FILE ALREADY EXIST.\n");
+    index = 0;
+    while(ctr != counter){
+        if(temp_string[index] == '/')
+            ctr++;
+        index++;
+    }
+    temp_string[index] = '\0';
+
+    int dir_result = access(temp_string, F_OK);
+    if(!dir_result){
+        int read_result = access(args[1], F_OK);
+        int write_result = access(args[2], F_OK);
+        if(read_result == 0 && write_result == -1){
+            FILE* read_file = fopen(args[1], "r");
+            FILE* write_file = fopen(args[2], "w");
+
+            do{
+                char read_char = fgetc(read_file);
+
+                if(read_char == EOF)
+                    break;
+                fputc(read_char, write_file);
+            }while(1);
+
+            fclose(read_file);
+            fclose(write_file);
+        }
+        else if(read_result == -1)
+            printf("SOURCE FILE NOT FOUND.\n");
+        else if(!write_result)
+            printf("DESTINATION FILE ALREADY EXIST.\n");
+    }
+    else{
+        printf("ERROR: PARENT DIRECTORY DOES NOT EXIST.\n");
+        free(temp_string);
+        return;
+    }
+    free(temp_string);
 }
 
 int check_builtin(char** args) {
